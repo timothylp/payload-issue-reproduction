@@ -1,20 +1,25 @@
-// storage-adapter-import-placeholder
 import { sqliteAdapter } from '@payloadcms/db-sqlite'
-import { payloadCloudPlugin } from '@payloadcms/payload-cloud'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
-
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
+const DEFAULT_ADMIN_EMAIL = process.env.DEFAULT_ADMIN_EMAIL || "admin@example.com"
+const DEFAULT_ADMIN_PASSWORD = process.env.DEFAULT_ADMIN_PASSWORD || "password"
+
 export default buildConfig({
   admin: {
+    autoLogin: process.env.NODE_ENV === "development" && {
+			email: DEFAULT_ADMIN_EMAIL,
+			password: DEFAULT_ADMIN_PASSWORD,
+			prefillOnly: true,
+		},
     user: Users.slug,
     importMap: {
       baseDir: path.resolve(dirname),
@@ -26,14 +31,41 @@ export default buildConfig({
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
+  	localization: {
+		locales: [
+			{
+				code: "en",
+				label: "English",
+			},
+			{
+				code: "fr",
+				label: "Français",
+			},
+		],
+		defaultLocale: "en",
+		fallback: false,
+	},
   db: sqliteAdapter({
     client: {
       url: process.env.DATABASE_URI || '',
     },
   }),
+  async onInit(payload) {
+    const { totalDocs } = await payload.count({
+      collection: "users",
+      depth: 0,
+    });
+
+    if (totalDocs === 0) {
+      await payload.create({
+        collection: "users",
+        data: {
+          email: DEFAULT_ADMIN_EMAIL,
+          password: DEFAULT_ADMIN_PASSWORD,
+        },
+      });
+    }
+  },
   sharp,
-  plugins: [
-    payloadCloudPlugin(),
-    // storage-adapter-placeholder
-  ],
+  plugins: [],
 })
