@@ -3,6 +3,16 @@ import { CollectionConfig } from "payload";
 
 export const Pages: CollectionConfig = {
     slug: "pages",
+    labels: {
+        singular: {
+            fr: "page",
+            en: "page",
+        },
+        plural: {
+            fr: "pages",
+            en: "pages",
+        },
+    },
     versions: {
         drafts: {
             autosave: true,
@@ -15,6 +25,7 @@ export const Pages: CollectionConfig = {
             name: "title",
             type: "text",
             required: true,
+            localized: true,
         },
         {
             name: "layout",
