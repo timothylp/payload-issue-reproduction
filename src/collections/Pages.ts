@@ -1,16 +1,15 @@
-import { block } from "@/blocks/block";
 import { CollectionConfig } from "payload";
 
 export const Pages: CollectionConfig = {
     slug: "pages",
     labels: {
         singular: {
-            fr: "page",
-            en: "page",
+            fr: "Page",
+            en: "Page",
         },
         plural: {
-            fr: "pages",
-            en: "pages",
+            fr: "Pages",
+            en: "Pages",
         },
     },
     versions: {
@@ -44,9 +43,8 @@ export const Pages: CollectionConfig = {
                 },
             },
             type: "blocks",
-            blocks: [
-                block,
-            ],
+            blocks: [],
+            blockReferences: ["block"]
         },
     ],
 };

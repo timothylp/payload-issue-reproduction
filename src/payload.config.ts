@@ -13,6 +13,7 @@ import { Config } from './payload-types'
 import { Tenants } from './collections/Tenants'
 import { en } from "payload/i18n/en";
 import { fr } from "payload/i18n/fr";
+import { block } from './blocks/block'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -44,6 +45,9 @@ export default buildConfig({
 			fileSize: 1024 * 1024 * 10, // 10MB
 		},
 	},
+	blocks: [
+		block,
+	],
 	localization: {
 		locales: [
 			{
