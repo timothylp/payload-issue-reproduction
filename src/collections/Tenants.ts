@@ -12,10 +12,5 @@ export const Tenants: CollectionConfig =
           type: 'text',
           required: true,
         },
-        {
-          name: 'slug',
-          type: 'text',
-          required: true,
-        },
       ],
     }

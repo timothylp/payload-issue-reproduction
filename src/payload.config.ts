@@ -6,14 +6,10 @@ import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
-import { Pages } from './collections/Pages'
 import { s3Storage } from '@payloadcms/storage-s3'
 import { multiTenantPlugin } from '@payloadcms/plugin-multi-tenant'
 import { Config } from './payload-types'
 import { Tenants } from './collections/Tenants'
-import { en } from "payload/i18n/en";
-import { fr } from "payload/i18n/fr";
-import { block } from './blocks/block'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -33,7 +29,7 @@ export default buildConfig({
 			baseDir: path.resolve(dirname),
 		},
 	},
-	collections: [Users, Media, Pages, Tenants],
+	collections: [Users, Media, Tenants],
 	editor: lexicalEditor(),
 	secret: process.env.PAYLOAD_SECRET || '',
 	typescript: {
@@ -44,27 +40,6 @@ export default buildConfig({
 		limits: {
 			fileSize: 1024 * 1024 * 10, // 10MB
 		},
-	},
-	blocks: [
-		block,
-	],
-	localization: {
-		locales: [
-			{
-				code: "en",
-				label: "English",
-			},
-			{
-				code: "fr",
-				label: "Français",
-			},
-		],
-		defaultLocale: "en",
-		fallback: false,
-	},
-		i18n: {
-		supportedLanguages: { en, fr },
-		fallbackLanguage: "fr",
 	},
 	db: sqliteAdapter({
 		client: {
@@ -91,7 +66,9 @@ export default buildConfig({
 	plugins: [
 		s3Storage({
 			collections: {
-				media: true,
+				media: {
+					prefix: "undefined",
+				},
 			},
 			bucket: process.env.S3_BUCKET || "",
 			clientUploads: true,
@@ -106,7 +83,7 @@ export default buildConfig({
 		}),
 		multiTenantPlugin<Config>({
 			collections: {
-				pages: {},
+				media: {},
 			},
 			userHasAccessToAllTenants: () => true,
 		})
